@@ -15,9 +15,21 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
+from django.views import static
+from .common_views import CustomRegistrationView
 
 
 urlpatterns = [
+    url(r'^rango/', include('rango.urls')),
     url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/register/$', CustomRegistrationView.as_view(), name='registration_register'),
+    url(r'^accounts/', include('registration.backends.simple.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)', static.serve, {'document_root': settings.MEDIA_ROOT})
+
+    ]
